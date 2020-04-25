@@ -31,3 +31,21 @@ app.get('/switch',cors(corsConfig),(request,response)=>{
 	});
 
 });
+
+app.post('/update-switch',cors(corsConfig),(request,response)=>{
+		console.log(">>>>>>>>>>",request.body.isEnable);
+
+		MongoClient.connect(url,function(err,db){
+			if(err) throw err;
+			var dbo = db.db("switch_app");
+			var myQuery = {darklaunchid:request.body.darklaunchid};
+			var myobj = {$set:{isEnable:request.body.isEnable}};
+			dbo.collection("darklaunch").updateOne(myQuery,myobj,function(err,res){
+				if(err) response.json({ok:false});
+				console.log("1 document is inserted");
+				response.json({ok:true})
+				db.close();
+			})
+		})
+
+})
